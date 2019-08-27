@@ -24,7 +24,14 @@ class MyScraper(scrapy.Spider):
     def start_requests(self):
 
         start_url = self.START_URL
-        yield scrapy.Request(url=start_url, callback=self.parse_pages)
+        yield scrapy.Request(url=start_url, callback=self.parse_pagination)
+
+    def parse_pagination(self, response):
+
+        for page_num in range(1, 298):
+            page_url = "https://www.apmex.com/search?page={}&x=9&y=16&ipp=120".format(page_num)
+            yield scrapy.Request(url=page_url, callback=self.parse_pages,
+                                 headers=self.headers, dont_filter=True)
 
     def parse_pages(self, response):
 
